@@ -10,7 +10,7 @@ schema = {
     # TODO: define order_id, customer (object), items (array of objects), total (number), currency (string)
         "order_id": {"type": "string"},
         "customer": {"type": "string"},
-        "items": {"type": "string"},
+        "items": {"type": "array" , "type": "string"},
         "total": {"type": "number"},
         "currency": {"type": "string"},
 
