@@ -20,6 +20,7 @@ RATE_TABLE: Dict[str, float] = {
     "EUR->THB": 40.0,
     "USD->EUR": 0.92,
     "EUR->USD": 1.087,
+
 }
 SUPPORTED = ["USD", "THB", "EUR", "JPY"]
 NAME_TO_ISO = {"baht": "THB", "dollar": "USD", "euro": "EUR", "yen": "JPY"}
@@ -49,8 +50,23 @@ class CurrencyTools:
         Return dict like: {"rate": , "converted": }.
         If missing rate -> return {"error": f"No rate for {base}->{quote}"}
         """
-        raise NotImplementedError("Implement convert() using RATE_TABLE")
+        RATE_TABLE = {
+            "USD->THB": 35.0,
+            "THB->USD": 0.0286,
+            "THB->EUR": 0.025,
+            "EUR->THB": 40.0,
+            "USD->EUR": 0.92,
+            "EUR->USD": 1.087,
+        }
 
+        key = f"{base}->{quote}"
+
+        if key in RATE_TABLE:
+            rate = RATE_TABLE[key]
+            converted = amount * rate
+            return { "amount": amount, "base": base, "quote": quote, "rate": rate, "converted": converted }
+        else:
+            return {"error": f"No rate for {base}->{quote}"}
     @classmethod
     def get_schemas(cls) -> List[dict]:
         """Return tool schemas (OpenAI-compatible). Fill the TODO for convert."""
@@ -71,20 +87,20 @@ class CurrencyTools:
                     "required": ["name_or_code"],
                 },
             },
-            # 3) convert - STUDENT_TODO: COMPLETE THIS SCHEMA
-            # {
-            #     "name": "convert",
-            #     "description": "Convert amount from base to quote using fixed RATE_TABLE",
-            #     "parameters": {
-            #         "type": "object",
-            #         "properties": {
-            #             "amount": {"type": "number"},
-            #             "base":   {"type": "string"},
-            #             "quote":  {"type": "string"}
-            #         },
-            #         "required": ["amount", "base", "quote"]
-            #     }
-            # }
+
+            {
+                 "name": "convert",
+                 "description": "Convert amount from base to quote using fixed RATE_TABLE",
+                 "parameters": {
+                     "type": "object",
+                     "properties": {
+                         "amount": {"type": "number"},
+                         "base":   {"type": "string"},
+                         "quote":  {"type": "string"}
+                     },
+                     "required": ["amount", "base", "quote"]
+                 }
+             }
         ]
 
 class ToolExecutor:
